@@ -1,0 +1,21 @@
+job_pleiades.sh
+================
+version Jan 3 2026
+(re)install directory run_realtime
+Runs steady-state with the latest magnetogram (cron job for updating
+magnetogram should run continuously).
+After steady-state the real-time-accurate sumulation series start
+The run stops after the simulation reaches the real-time. After this
+the cronjob operating recurrent runs should work continuously (series of 24
+runs restarts every day).
+
+job_recurrent_pleiades.py
+=================
+Version Jan 3 2026
+Run 24 times the real-time simulations each with the newly updated magnetogram
+
+job_recurrent_cron.py
+=================
+Version Jan 3 2026
+Run 24 times the real-time simulations each with the newly updated magnetogram
+Limit the computational time by 23 hours 20 minutes

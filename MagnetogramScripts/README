@@ -1,0 +1,31 @@
+get_latest_magnetogram.py (MPetrenk)
+====================================
+version: Oct 21  2025
+Copies files in SUBMISSION_DATA to run_realtime/SC/tmp
+Copies the latest magnetogram from ISWA to run_realtime/SC/tmp
+Unzip the latest magnetogram fitsfile.
+Make a tarball from run_realtime/SC/tmp to run_realtime/SC/submission.tgz
+
+get_magnetogram_cron.py
+=======================
+version Nov 21 2025
+Check out the latest magnetogram in the ISWA database
+Copies the unzipped magnetogram as fitsfile.fits to SUBMISSION_DATA
+
+get_magnetogram_pleiades.py
+===========================
+verion Nov 22 2025
+Make a tarball from SUBMISSION_DATA directory to run_realtime/SC/submission.tgz
+
+clone_iswa_gong.py
+===========================
+Version Jan 3 2026
+Clone a sequence of magnetograms from ISWA database in the time/date range
+(min and max date/time values are input parameters) to ISWACLONE directory
+
+get_clone_magnetogram.py
+===========================
+Version Jan 3 2026
+For time stamp stored in SUBMISSION_DATA/datetime.txt pull a magnetogram
+fitsfile from ISWACLONE and advance datetime.txt time stamp by 1 hour.
+

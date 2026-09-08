@@ -15,7 +15,7 @@ import shutil
 import gzip
 import argparse
 
-ISWA_DATA_URL = 'https://iswaa-webservice1.ccmc.gsfc.nasa.gov/iswa_data_tree/observation/solar/gong/mrzqs/'
+ISWA_DATA_URL = 'https://iswa.ccmc.gsfc.nasa.gov/iswa_data_tree/observation/solar/gong/mrzqs/'
 
 #modify to change the output directory
 ISWACLONE = '/home4/isokolov/ISWACLONE'
@@ -69,7 +69,7 @@ def get_highest(page_url, pattern, datetimemin, datetimemax, monthclone):
         text = link['text']
         matches = re.search(pattern, text)
         if (matches):
-            if (matches.group(1) >= datetimemin and matches.group(1)<=datetimemax):                
+            if (matches.group(1) >= datetimemin and matches.group(1)<=datetimemax):
                 granule_url = page_url.rstrip('/') + '/' + original_url
                 fits_file_gz = os.path.join(monthclone,str(original_url))
                 if not os.path.exists(fits_file_gz):

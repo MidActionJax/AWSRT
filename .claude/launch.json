@@ -1,0 +1,17 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "clear-web",
+      "runtimeExecutable": "docker",
+      "runtimeArgs": ["compose", "-f", "C:\\Users\\jaxon\\OneDrive\\Desktop\\Github\\CLEAR_web\\clear\\dockercompose\\docker-compose.yml", "up", "--build"],
+      "port": 8000
+    },
+    {
+      "name": "dashboard-scratchpad",
+      "runtimeExecutable": "python",
+      "runtimeArgs": ["-m", "http.server", "8934", "--directory", "C:\\Users\\jaxon\\AppData\\Local\\Temp\\claude\\C--Users-jaxon-OneDrive-Desktop-Github-AWSRT\\ffdf6d7d-93c9-4c52-ad0c-51dd385d38a7\\scratchpad"],
+      "port": 8934
+    }
+  ]
+}

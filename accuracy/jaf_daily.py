@@ -99,6 +99,10 @@ def main():
     ap.add_argument("--multi-model", default=os.path.join(HERE, "jaf_multivar_model_ops_20261119.json"))
     ap.add_argument("--state", default=os.path.join(HERE, "state"))
     ap.add_argument("--first", default="2026-11-20", help="only runs starting on/after this (UTC)")
+    ap.add_argument("--last", help="only runs starting BEFORE this (UTC); for backfills")
+    ap.add_argument("--skip-existing", action="store_true",
+                    help="never touch a run that already has a corrected file (backfills: keeps "
+                         "the delivered files and any other model's output as they are)")
     ap.add_argument("--now", help="pretend it is this UTC time (testing)")
     ap.add_argument("--latency-h", type=float, default=3.6)
     ap.add_argument("--ahead-h", type=float, default=24.0)
@@ -107,6 +111,7 @@ def main():
     now_bin = ubin_iso(a.now) if a.now else round(time.time() / BIN_S)
     lat, ahead = round(a.latency_h * H), round(a.ahead_h * H)
     first_bin = ubin_iso(a.first)
+    last_bin = ubin_iso(a.last) if a.last else None
     os.makedirs(a.state, exist_ok=True)
 
     doc = fetch(path=a.series)
@@ -136,7 +141,10 @@ def main():
         stamp = name.split("_")[-1]
         b0_stamp = round(dt.datetime.strptime(stamp, "%y%m%dt%H%M").replace(
             tzinfo=dt.timezone.utc).timestamp() / BIN_S)
-        if b0_stamp < first_bin or os.path.exists(os.path.join(a.state, name + ".final")):
+        is_final = os.path.exists(os.path.join(a.state, name + ".final"))
+        too_late = last_bin is not None and b0_stamp >= last_bin
+        has_file = a.skip_existing and os.path.exists(os.path.join(a.out, name, f"jaf_{stamp}.csv"))
+        if b0_stamp < first_bin or is_final or too_late or has_file:
             skipped += 1
             continue
         v, n, b, b0 = fe.load_forecast(sat)

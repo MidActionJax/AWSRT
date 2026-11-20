@@ -290,44 +290,67 @@ def main():
                    glob.glob(os.path.join(a.forecasts, "RESULTS_*", "IH", "sat_earth_*.sat")))
     for name in names:
         sat = glob.glob(os.path.join(a.forecasts, name, "IH", "sat_earth_*.sat"))[0]
-        fc = load_forecast_all(sat)
-        b0 = min(fc)
-        model = {}
-        for j, x in enumerate(("v", "n", "b", "bz", "T")):
-            model[x] = G.model[x].copy()
-            model[x][G.idx(b0):] = np.nan          # nothing from after the run's start...
-            for k, vals in fc.items():               # ...except the forecast itself
-                model[x][G.idx(k)] = vals[j]
-        add_max6(model)
-        vspeed = read_speed(a.speed_dir, name)
+        targets, out, _ = apply_run(G, models, sat, read_speed(a.speed_dir, name), lat, ahead)
         stamp = name.split("_")[-1]
         os.makedirs(os.path.join(a.out, name), exist_ok=True)
-        targets = [k for k in sorted(fc) if b0 + lat <= k <= b0 + 48 * H]
-        out = {k: {"v": vspeed.get(k, fc[k][0])} for k in targets}
-        kk = np.array(targets)
-        issue = np.maximum(b0 + lat, kk - ahead)
-        Ls = np.minimum(48, np.round((kk - issue) / H).astype(int))
-        t, i = kk - G.g0, issue - G.g0
-        for x in VARS:
-            fits, mix = models[x]
-            F, rX, p27 = feats(G, model, x, t, i)
-            raw = np.array([fc[k][("v", "n", "b", "bz", "T").index(x)] for k in targets])
-            pred = raw.copy()
-            for L in np.unique(Ls):
-                m = (Ls == L) & np.isfinite(F).all(1)
-                if m.any():
-                    pred[m] = mix[L] * from_fit(x, ridge_predict(F[m], *fits[L])) + (1 - mix[L]) * (0.5 * rX[m] + 0.5 * p27[m])
-            if x in ("n", "b", "T"):
-                pred = np.maximum(pred, 0.05 * np.abs(raw))
-            for j, k in enumerate(targets):
-                out[k][x] = float(pred[j])
-        with open(os.path.join(a.out, name, f"jaf_{stamp}.csv"), "w") as f:
-            f.write("time,v,n,b,bz,T\n")
-            for k in targets:
-                tt = dt.datetime.utcfromtimestamp(k * BIN_S).strftime("%Y-%m-%dT%H:%M:%SZ")
-                r = out[k]
-                f.write(f"{tt},{r['v']:.2f},{r['n']:.4f},{r['b']:.4f},{r['bz']:.4f},{r['T']:.1f}\n")
+        write_csv(os.path.join(a.out, name, f"jaf_{stamp}.csv"), targets, out)
         print(f"{name}: {len(targets)} bins", flush=True)
+
+
+def apply_run(G, models, sat, vspeed, lat, ahead, now_bin=None):
+    """Correct n, b, bz, T of one run (fresh observations).  vspeed: the
+    speed correction {bin: v}.  Returns (targets, {bin: {var: value}},
+    {bin: True if every variable was corrected there, not left raw}).
+    now_bin: never issue after now (live use, see forecast_apply)."""
+    fc = load_forecast_all(sat)
+    b0 = min(fc)
+    model = {}
+    for j, x in enumerate(("v", "n", "b", "bz", "T")):
+        model[x] = G.model[x].copy()
+        model[x][G.idx(b0):] = np.nan          # nothing from after the run's start...
+        for k, vals in fc.items():               # ...except the forecast itself
+            model[x][G.idx(k)] = vals[j]
+    add_max6(model)
+    targets = [k for k in sorted(fc) if b0 + lat <= k <= b0 + 48 * H]
+    kk = np.array(targets)
+    issue = np.maximum(b0 + lat, kk - ahead)
+    if now_bin is not None:
+        keep = np.minimum(issue, now_bin) >= b0 + lat
+        targets = [k for k, ok in zip(targets, keep) if ok]
+        kk, issue = kk[keep], np.minimum(issue[keep], now_bin)
+    out = {k: {"v": vspeed.get(k, fc[k][0])} for k in targets}
+    full = {k: k in vspeed for k in targets}
+    if not targets:
+        return targets, out, full
+    Ls = np.minimum(48, np.round((kk - issue) / H).astype(int))
+    t, i = kk - G.g0, issue - G.g0
+    for x in VARS:
+        fits, mix = models[x]
+        F, rX, p27 = feats(G, model, x, t, i)
+        raw = np.array([fc[k][("v", "n", "b", "bz", "T").index(x)] for k in targets])
+        pred = raw.copy()
+        ok = np.isfinite(F).all(1)
+        for L in np.unique(Ls):
+            m = (Ls == L) & ok
+            if m.any():
+                pred[m] = mix[L] * from_fit(x, ridge_predict(F[m], *fits[L])) + (1 - mix[L]) * (0.5 * rX[m] + 0.5 * p27[m])
+        if x in ("n", "b", "T"):
+            pred = np.maximum(pred, 0.05 * np.abs(raw))
+        for j, k in enumerate(targets):
+            out[k][x] = float(pred[j])
+            full[k] = full[k] and bool(ok[j])
+    return targets, out, full
+
+
+def write_csv(path, targets, out):
+    tmp = path + ".tmp"
+    with open(tmp, "w") as f:
+        f.write("time,v,n,b,bz,T\n")
+        for k in targets:
+            tt = dt.datetime.utcfromtimestamp(k * BIN_S).strftime("%Y-%m-%dT%H:%M:%SZ")
+            r = out[k]
+            f.write(f"{tt},{r['v']:.2f},{r['n']:.4f},{r['b']:.4f},{r['bz']:.4f},{r['T']:.1f}\n")
+    os.replace(tmp, path)
 
 
 if __name__ == "__main__":

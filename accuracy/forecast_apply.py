@@ -45,14 +45,18 @@ def fmt(x):
     return f"{m}E{int(e):+04d}"
 
 
-def correct_forecast(S, M, fc, mode="start", ahead_h=24.0, latency_h=3.6):
+def correct_forecast(S, M, fc, mode="start", ahead_h=24.0, latency_h=3.6, now_bin=None):
     """mode "start": every target corrected with observations up to the
     run's start (one fixed correction per run).
     mode "fresh": each target t corrected as a forecaster would see it
     ahead_h before t: issue = max(run start + latency_h, t - ahead_h), i.e.
     with the observations in hand at that moment (the run is in hand
     latency_h after its start, and the correction is just arithmetic, so
-    it can be redone whenever new observations arrive)."""
+    it can be redone whenever new observations arrive).
+    now_bin (fresh mode, live use): never issue after "now"; targets whose
+    ideal issue time is still in the future are corrected with the
+    observations up to now, at the correspondingly longer lead, and get
+    recomputed on later runs."""
     idx = {k: j for j, k in enumerate(M["features"])}
     at = fcx.forecast_model_at(S, fc)
     b0 = fc["issue_bin"]
@@ -64,6 +68,10 @@ def correct_forecast(S, M, fc, mode="start", ahead_h=24.0, latency_h=3.6):
         if Lrun < 0 or Lrun > 48 * H:
             continue
         issue = b0 if mode == "start" else max(b0 + lat, k - ahead)
+        if now_bin is not None:
+            issue = min(issue, now_bin)
+            if issue < b0 + lat:          # the run wasn't in hand yet
+                continue
         if issue > k:
             continue
         Lb = k - issue

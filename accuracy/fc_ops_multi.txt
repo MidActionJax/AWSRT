@@ -1,0 +1,12 @@
+C:\Users\jaxon\OneDrive\Desktop\Github\AWSRT\accuracy\forecast_multivar.py:81: RuntimeWarning: All-NaN slice encountered
+  r = np.nanmean(v, 1) if how == "mean" else np.nanmax(v, 1)
+C:\Users\jaxon\OneDrive\Desktop\Github\AWSRT\accuracy\forecast_multivar.py:81: RuntimeWarning: Mean of empty slice
+  r = np.nanmean(v, 1) if how == "mean" else np.nanmax(v, 1)
+Traceback (most recent call last):
+  File "C:\Users\jaxon\OneDrive\Desktop\Github\AWSRT\accuracy\forecast_multivar.py", line 333, in <module>
+    main()
+  File "C:\Users\jaxon\OneDrive\Desktop\Github\AWSRT\accuracy\forecast_multivar.py", line 275, in main
+    models = {x: fit_var(G, x, v0, t_end) for x in VARS}
+  File "C:\Users\jaxon\OneDrive\Desktop\Github\AWSRT\accuracy\forecast_multivar.py", line 275, in <dictcomp>
+    models = {x: fit_var(G, x, v0, t_end) for x in VARS}
+NameError: free variable 'v0' referenced before assignment in enclosing scope. Did you mean: '.0'?

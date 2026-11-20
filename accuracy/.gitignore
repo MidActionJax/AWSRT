@@ -1,0 +1,5 @@
+# re-downloadable image cache and intermediate scoring dumps
+lasco_cache/
+rows_*.pkl
+__pycache__/
+.claude/

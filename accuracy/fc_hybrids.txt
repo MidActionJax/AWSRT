@@ -1,0 +1,59 @@
+lead  0: ridge mix 1.00, jaf-vs-analog 1.00
+lead  1: ridge mix 1.00, jaf-vs-analog 1.00
+lead  2: ridge mix 1.00, jaf-vs-analog 1.00
+lead  3: ridge mix 1.00, jaf-vs-analog 1.00
+lead  4: ridge mix 1.00, jaf-vs-analog 1.00
+lead  5: ridge mix 1.00, jaf-vs-analog 1.00
+lead  6: ridge mix 1.00, jaf-vs-analog 1.00
+lead  7: ridge mix 1.00, jaf-vs-analog 1.00
+lead  8: ridge mix 1.00, jaf-vs-analog 1.00
+lead  9: ridge mix 1.00, jaf-vs-analog 1.00
+lead 10: ridge mix 1.00, jaf-vs-analog 1.00
+lead 11: ridge mix 1.00, jaf-vs-analog 1.00
+lead 12: ridge mix 1.00, jaf-vs-analog 1.00
+lead 13: ridge mix 1.00, jaf-vs-analog 1.00
+lead 14: ridge mix 1.00, jaf-vs-analog 1.00
+lead 15: ridge mix 1.00, jaf-vs-analog 1.00
+lead 16: ridge mix 1.00, jaf-vs-analog 1.00
+lead 17: ridge mix 1.00, jaf-vs-analog 1.00
+lead 18: ridge mix 1.00, jaf-vs-analog 1.00
+lead 19: ridge mix 0.95, jaf-vs-analog 1.00
+lead 20: ridge mix 0.95, jaf-vs-analog 1.00
+lead 21: ridge mix 0.95, jaf-vs-analog 0.95
+lead 22: ridge mix 0.90, jaf-vs-analog 0.95
+lead 23: ridge mix 0.90, jaf-vs-analog 1.00
+lead 24: ridge mix 0.90, jaf-vs-analog 1.00
+lead 25: ridge mix 0.85, jaf-vs-analog 1.00
+lead 26: ridge mix 0.85, jaf-vs-analog 0.95
+lead 27: ridge mix 0.85, jaf-vs-analog 0.95
+lead 28: ridge mix 0.80, jaf-vs-analog 0.95
+lead 29: ridge mix 0.80, jaf-vs-analog 1.00
+lead 30: ridge mix 0.80, jaf-vs-analog 1.00
+lead 31: ridge mix 0.75, jaf-vs-analog 1.00
+lead 32: ridge mix 0.75, jaf-vs-analog 1.00
+lead 33: ridge mix 0.75, jaf-vs-analog 1.00
+lead 34: ridge mix 0.75, jaf-vs-analog 1.00
+lead 35: ridge mix 0.70, jaf-vs-analog 1.00
+lead 36: ridge mix 0.70, jaf-vs-analog 1.00
+lead 37: ridge mix 0.70, jaf-vs-analog 1.00
+lead 38: ridge mix 0.70, jaf-vs-analog 1.00
+lead 39: ridge mix 0.70, jaf-vs-analog 1.00
+lead 40: ridge mix 0.70, jaf-vs-analog 1.00
+lead 41: ridge mix 0.70, jaf-vs-analog 0.95
+lead 42: ridge mix 0.70, jaf-vs-analog 0.95
+lead 43: ridge mix 0.70, jaf-vs-analog 0.95
+lead 44: ridge mix 0.70, jaf-vs-analog 0.95
+lead 45: ridge mix 0.70, jaf-vs-analog 0.95
+lead 46: ridge mix 0.70, jaf-vs-analog 0.90
+lead 47: ridge mix 0.70, jaf-vs-analog 0.95
+lead 48: ridge mix 0.70, jaf-vs-analog 1.00
+
+ lead h         raw       blend         jaf      analog         hyb      regime    jaf_bias  (MAE/corr)
+  0-6     91.3/0.70   56.2/0.79   13.5/0.98   31.2/0.94   13.5/0.98   13.8/0.98   13.6/0.98
+  6-12    93.1/0.67   58.8/0.76   22.7/0.95   30.9/0.93   22.7/0.95   22.6/0.95   23.0/0.95
+ 12-24   100.8/0.63   65.6/0.71   39.1/0.81   45.4/0.86   39.0/0.81   38.8/0.83   38.7/0.80
+ 24-36    95.1/0.65   62.5/0.71   44.6/0.74   53.0/0.73   44.5/0.75   45.6/0.76   45.8/0.72
+ 36-48   104.4/0.61   67.3/0.67   57.6/0.64   63.4/0.68   57.1/0.65   60.4/0.61   58.5/0.60
+  0-48    98.1/0.64   63.2/0.72   39.7/0.80   48.1/0.80   39.5/0.80   40.6/0.80   40.2/0.79
+
+chosen jaf-vs-analog weight by lead: 0:1.00 6:1.00 12:1.00 18:0.99 24:0.97 30:0.99 36:1.00 42:0.96 48:0.95
